@@ -1,14 +1,16 @@
-import { refs } from '../main';
 import { getImagesByQuery } from './pixabay-api';
-import { onFormSubmit } from '../main';
 
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+
+const gallery = document.querySelector('.gallery');
+const preloader = document.querySelector('.js-loader');
 
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionPosition: 'bottom',
 });
+
 export function createGallery(images) {
   const markup = images
     .map(
@@ -28,18 +30,37 @@ export function createGallery(images) {
 		  alt="${tags}"
 		/>
 	</a>
-    <p> Likes "${likes}"</p>
-    <p> Views "${views}"</p>
-    <p> Comments "${comments}"</p>
-    <p> Downloads "${downloads}"</p>
+  <div class="field">
+  <div class="statistics">
+    <span class='titles'>Likes</span>
+    <span class='numbers'>${likes}</span>
+  </div>
+  <div class="statistics">
+    <span class='titles'>Views</span>
+    <span class='numbers'>${views}</span>
+  </div>
+  <div class="statistics">
+    <span class='titles'>Comments</span>
+    <span class='numbers'>${comments}</span>
+  </div>
+  <div class="statistics">
+    <span class='titles'>Downloads</span>
+    <span class='numbers'>${downloads}</span>
+  </div>
+</div>
 </li>`
     )
     .join('');
-  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  gallery.insertAdjacentHTML('beforeend', markup);
 
   lightbox.refresh();
 }
-
-export function clearGallery() {}
-export function showLoader() {}
-export function hideLoader() {}
+export function clearGallery() {
+  gallery.innerHTML = '';
+}
+export function showLoader() {
+  preloader.classList.add('is-active');
+}
+export function hideLoader() {
+  preloader.classList.remove('is-active');
+}

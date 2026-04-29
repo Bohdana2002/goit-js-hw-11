@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { clearGallery, hideLoader, showLoader } from './render-functions';
 
 export function getImagesByQuery(query) {
   return axios

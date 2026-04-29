@@ -1,11 +1,20 @@
 import axios from 'axios';
 
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+
 import { getImagesByQuery } from './js/pixabay-api';
-import { createGallery } from './js/render-functions';
+import {
+  clearGallery,
+  createGallery,
+  hideLoader,
+  showLoader,
+} from './js/render-functions';
 
 export const refs = {
   form: document.querySelector('.form'),
   gallery: document.querySelector('.gallery'),
+  preloader: document.querySelector('.js-loader'),
 };
 export function onFormSubmit(event) {
   event.preventDefault();
@@ -13,16 +22,24 @@ export function onFormSubmit(event) {
   if (!query) {
     return;
   }
-  refs.gallery.innerHTML = '';
+  clearGallery();
+  showLoader();
   getImagesByQuery(query)
     .then(data => {
       if (data.hits.length === 0) {
-        return alert(
-          'Sorry, there are no images matching your search query. Please try again!'
-        );
+        iziToast.error({
+          position: 'topRight',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+        });
+        return;
       }
       createGallery(data.hits);
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err))
+    .finally(() => {
+      hideLoader();
+    });
 }
+hideLoader();
 refs.form.addEventListener('submit', onFormSubmit);
